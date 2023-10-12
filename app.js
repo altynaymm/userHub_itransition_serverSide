@@ -29,7 +29,7 @@ app.use(session(sessionConfig));
 
 app.use(
   cors({
-    origin: ['http://localhost:5173'],
+    origin: ['https://user-hub-itransition-client.vercel.app/'],
     credentials: true,
   }),
 );
