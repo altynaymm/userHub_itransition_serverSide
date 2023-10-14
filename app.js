@@ -9,7 +9,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: 'https://user-hub-itransition-client-side.vercel.app',
+    origin: ['https://user-hub-itransition-client-side.vercel.app', 'https://user-hub-itransition-client-side.vercel.app/users'],
     credentials: true,
     methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
     optionsSuccessStatus: 204,
