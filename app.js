@@ -23,17 +23,10 @@ app.use(express.json());
 const redis = require('redis');
 const RedisStore = require('connect-redis').default;
 
-// const redisClient = redis.createClient({
-//   legacyMode: true,
-//   url: process.env.REDIS_URL || 'redis://localhost:6379',
-// });
-
 const redisClient = redis.createClient({
   legacyMode: true,
   url: process.env.REDIS_URL || 'redis://localhost:6379',
 });
-
-redisClient.on('error', (err) => console.log('Redis Client Error', err));
 
 (async () => {
   await redisClient.connect();
