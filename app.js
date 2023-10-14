@@ -20,7 +20,7 @@ app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  credentials: true,
 }));
 
 app.use(morgan('dev'));
@@ -32,11 +32,9 @@ app.use(express.json());
 
 // const redisClient = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
 
-
 // redisClient.on("error", (err) => {
 //   console.error("Ошибка в Redis", err);
 // });
-
 
 // const MAX_AGE = +process.env.MAX_AGE || 999999;
 
@@ -54,6 +52,32 @@ app.use(express.json());
 //   },
 // };
 // app.use(session(sessionConfig));
+
+const pgSession = require('connect-pg-simple')(session);
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+app.use(session({
+  store: new pgSession({
+    pool,
+    tableName: 'session',
+  }),
+  secret: process.env.SESSION_SECRET ?? 'Секретное слово',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    // httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+  },
+}));
 
 const userRouter = require('./src/routes/user.router');
 
