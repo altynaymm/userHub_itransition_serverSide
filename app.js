@@ -17,43 +17,43 @@ const app = express();
 // );
 
 app.use(cors({
-  origin: true,
-  credentials: true,
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
-
 
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const redis = require('redis');
-const RedisStore = require('connect-redis').default;
+// const Redis = require('ioredis');
+// const RedisStore = require('connect-redis').default;
 
-const redisClient = redis.createClient({
-  legacyMode: true,
-  url: process.env.REDIS_URL || 'redis://localhost:6379',
-});
+// const redisClient = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
 
-(async () => {
-  await redisClient.connect();
-})();
 
-const MAX_AGE = +process.env.MAX_AGE || 999999;
+// redisClient.on("error", (err) => {
+//   console.error("Ошибка в Redis", err);
+// });
 
-const sessionConfig = {
-  name: 'ReactAuthentication',
-  store: new RedisStore({ client: redisClient, ttl: MAX_AGE }),
-  secret: process.env.SESSION_SECRET ?? 'Секретное слово',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: MAX_AGE * 1000,
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true,
-  },
-};
-app.use(session(sessionConfig));
+
+// const MAX_AGE = +process.env.MAX_AGE || 999999;
+
+// const sessionConfig = {
+//   name: 'ReactAuthentication',
+//   store: new RedisStore({ client: redisClient, ttl: MAX_AGE }),
+//   secret: process.env.SESSION_SECRET ?? 'Секретное слово',
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: {
+//     maxAge: MAX_AGE * 1000,
+//     httpOnly: true,
+//     sameSite: 'none',
+//     secure: true,
+//   },
+// };
+// app.use(session(sessionConfig));
 
 const userRouter = require('./src/routes/user.router');
 
