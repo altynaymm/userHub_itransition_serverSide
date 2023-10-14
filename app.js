@@ -68,7 +68,7 @@ app.use(session({
     pool,
     tableName: 'session',
   }),
-  secret: process.env.SESSION_SECRET ?? 'Секретное слово',
+  secret: process.env.SECRET_KEY_SESSION ?? 'Секретное слово',
   resave: false,
   saveUninitialized: false,
   cookie: {
