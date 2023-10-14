@@ -26,6 +26,7 @@ app.use(express.json());
 const fileStoreOptions = {
   path: process.env.SESSION_PATH || './sessions',
 };
+const MAX_AGE = +process.env.MAX_AGE || 999999
 
 const sessionConfig = {
   name: 'ReactAuthentication',
@@ -34,7 +35,7 @@ const sessionConfig = {
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 9999999,
+    maxAge: MAX_AGE,
     httpOnly: false,
     sameSite: 'none',
   },
