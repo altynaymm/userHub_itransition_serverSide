@@ -66,7 +66,7 @@ const pool = new Pool({
 app.use(session({
   store: new pgSession({
     pool,
-    tableName: 'session',
+    tableName: 'Session',
   }),
   secret: process.env.SECRET_KEY_SESSION ?? 'Секретное слово',
   resave: false,
