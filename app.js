@@ -31,9 +31,9 @@ app.use(session(sessionConfig));
 
 app.use(
   cors({
-    origin: 'https://user-hub-itransition-client-side-dfov-3dg75kfmi.vercel.app/',
+    origin: 'https://user-hub-itransition-client-side-dfov-3dg75kfmi.vercel.app',
     credentials: true,
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
     optionsSuccessStatus: 204,
   }),
 );
