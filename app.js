@@ -1,14 +1,34 @@
+/* eslint-disable import/no-extraneous-dependencies */
 require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const session = require('express-session');
-const FileStore = require('session-file-store')(session);
 
 const app = express();
 
-const userRouter = require('./src/routes/user.router');
+const redis = require('redis');
+const RedisStore = require('connect-redis')(session);
+
+const redisClient = redis.createClient(process.env.REDIS_URL || 'redis://localhost:6379');
+const MAX_AGE = +process.env.MAX_AGE || 999999;
+
+const sessionConfig = {
+  name: 'ReactAuthentication',
+  store: new RedisStore({ client: redisClient, ttl: MAX_AGE }),
+  secret: process.env.SESSION_SECRET ?? 'Секретное слово',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: MAX_AGE * 1000,
+    httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+  },
+};
+
+app.use(session(sessionConfig));
 
 app.use(
   cors({
@@ -23,25 +43,7 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const fileStoreOptions = {
-  path: process.env.SESSION_PATH || './sessions',
-};
-const MAX_AGE = +process.env.MAX_AGE || 999999
-
-const sessionConfig = {
-  name: 'ReactAuthentication',
-  store: new FileStore(fileStoreOptions),
-  secret: process.env.SESSION_SECRET ?? 'Секретное слово',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: MAX_AGE,
-    httpOnly: false,
-    sameSite: 'none',
-  },
-};
-
-app.use(session(sessionConfig));
+const userRouter = require('./src/routes/user.router');
 
 app.use('/', userRouter);
 
