@@ -7,14 +7,20 @@ const session = require('express-session');
 
 const app = express();
 
-app.use(
-  cors({
-    origin: ['https://user-hub-itransition-client-side.vercel.app', 'https://user-hub-itransition-client-side.vercel.app/users'],
-    credentials: true,
-    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
-    optionsSuccessStatus: 204,
-  }),
-);
+// app.use(
+//   cors({
+//     origin: ['https://user-hub-itransition-client-side.vercel.app', 'https://user-hub-itransition-client-side.vercel.app/users'],
+//     credentials: true,
+//     methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
+//     optionsSuccessStatus: 204,
+//   }),
+// );
+
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
+
 
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
