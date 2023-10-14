@@ -20,13 +20,10 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const createClient = require('redis');
+const redis = require('redis')
+const RedisStore = require('connect-redis').default;
 
-const connectRedis = require('connect-redis');
-
-const RedisStore = connectRedis(session);
-
-const redisClient = createClient({
+const redisClient = redis.createClient({
   legacyMode: true,
   url: process.env.REDIS_URL || 'redis://localhost:6379',
 });
