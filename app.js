@@ -1,14 +1,16 @@
-/* eslint-disable import/no-extraneous-dependencies */
 require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
+const path = require('path');
+
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
+
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -29,12 +31,23 @@ app.use(session(sessionConfig));
 
 app.use(
   cors({
-    origin: ['https://user-hub-itransition-client.vercel.app/'],
+    origin: 'https://user-hub-itransition-client-side-dfov-3dg75kfmi.vercel.app/',
     credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+    optionsSuccessStatus: 204,
   }),
 );
 
-const path = require('path')
+app.use(
+  'api',
+  createProxyMiddleware({
+    target: ' https://userhub-itransition-db40c4fa7fa7.herokuapp.com/',
+    changeOrigin: true,
+    pathRewrite: {
+      '^api': '',
+    },
+  }),
+);
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
@@ -42,12 +55,11 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'));
 });
 
-
 const userRouter = require('./src/routes/user.router');
 
-app.use('/', userRouter);
+app.use('/api', userRouter);
 
-const { PORT } = process.env || 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);
 });
