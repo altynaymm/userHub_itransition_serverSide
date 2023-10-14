@@ -23,6 +23,7 @@ app.use(
 //   credentials: true,
 // }));
 
+
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -79,9 +80,21 @@ app.use(session({
   },
 }));
 
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+const API_SERVICE_URL = 'https://userhub-itransition-db40c4fa7fa7.herokuapp.com/';
+
+app.use('/api', createProxyMiddleware({
+  target: API_SERVICE_URL,
+  changeOrigin: true,
+  pathRewrite: {
+    '^/api': '',
+  },
+}));
+
 const userRouter = require('./src/routes/user.router');
 
-app.use('/', userRouter);
+app.use('/api', userRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
