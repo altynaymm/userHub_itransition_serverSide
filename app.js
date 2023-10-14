@@ -8,7 +8,7 @@ const FileStore = require('session-file-store')(session);
 
 const app = express();
 
-const { createProxyMiddleware } = require('http-proxy-middleware');
+// const { createProxyMiddleware } = require('http-proxy-middleware');
 const userRouter = require('./src/routes/user.router');
 
 app.use(
@@ -38,16 +38,16 @@ const sessionConfig = {
 
 app.use(session(sessionConfig));
 
-app.use(
-  '/api',
-  createProxyMiddleware({
-    target: 'https://userhub-itransition-db40c4fa7fa7.herokuapp.com',
-    changeOrigin: true,
-    pathRewrite: {
-      '^/api': '',
-    },
-  }),
-);
+// app.use(
+//   '/api',
+//   createProxyMiddleware({
+//     target: 'https://userhub-itransition-db40c4fa7fa7.herokuapp.com',
+//     changeOrigin: true,
+//     pathRewrite: {
+//       '^/api': '',
+//     },
+//   }),
+// );
 
 app.use('/', userRouter);
 
