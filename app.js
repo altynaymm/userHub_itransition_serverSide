@@ -39,7 +39,7 @@ app.use(
 );
 
 app.use(
-  'api',
+  '/api',
   createProxyMiddleware({
     target: ' https://userhub-itransition-db40c4fa7fa7.herokuapp.com/',
     changeOrigin: true,
