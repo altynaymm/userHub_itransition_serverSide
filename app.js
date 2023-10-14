@@ -1,5 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import connectRedis from 'connect-redis';
 
 require('dotenv').config();
 
@@ -24,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const redis = require('redis');
+const connectRedis = require('connect-redis');
 
 const RedisStore = connectRedis(session);
 
