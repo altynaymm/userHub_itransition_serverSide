@@ -5,7 +5,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
-const path = require('path');
+
 
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
@@ -41,7 +41,7 @@ app.use(
 app.use(
   '/api',
   createProxyMiddleware({
-    target: ' https://userhub-itransition-db40c4fa7fa7.herokuapp.com',
+    target: ' https://userhub-itransition-db40c4fa7fa7.herokuapp.com/api',
     changeOrigin: true,
     pathRewrite: {
       '^api': '',
