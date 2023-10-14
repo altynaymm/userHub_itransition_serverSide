@@ -28,8 +28,6 @@ const redisClient = redis.createClient({
   url: process.env.REDIS_URL || 'redis://localhost:6379',
 });
 
-await redisClient.connect();
-
 const MAX_AGE = +process.env.MAX_AGE || 999999;
 
 const sessionConfig = {
