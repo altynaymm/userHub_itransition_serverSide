@@ -8,6 +8,19 @@ const session = require('express-session');
 
 const app = express();
 
+app.use(
+  cors({
+    origin: 'https://user-hub-itransition-client-side.vercel.app',
+    credentials: true,
+    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
+    optionsSuccessStatus: 204,
+  }),
+);
+
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
 
@@ -30,22 +43,10 @@ const sessionConfig = {
 
 app.use(session(sessionConfig));
 
-app.use(
-  cors({
-    origin: 'https://user-hub-itransition-client-side.vercel.app',
-    credentials: true,
-    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
-    optionsSuccessStatus: 204,
-  }),
-);
-
-app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
 const userRouter = require('./src/routes/user.router');
 
 app.use('/', userRouter);
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
