@@ -1,5 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-
 require('dotenv').config();
 
 const express = require('express');
@@ -22,12 +20,17 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const redis = require('redis');
+const createClient = require('redis');
+
 const connectRedis = require('connect-redis');
 
 const RedisStore = connectRedis(session);
 
-const redisClient = redis.createClient(process.env.REDIS_URL || 'redis://localhost:6379');
+const redisClient = createClient({
+  legacyMode: true,
+  url: process.env.REDIS_URL || 'redis://localhost:6379',
+});
+
 const MAX_AGE = +process.env.MAX_AGE || 999999;
 
 const sessionConfig = {
