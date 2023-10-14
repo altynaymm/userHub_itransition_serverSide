@@ -53,7 +53,7 @@ app.use(express.json());
 // };
 // app.use(session(sessionConfig));
 
-const pgSession = require('connect-pg-simple')(session);
+const PgSession = require('connect-pg-simple')(session);
 const { Pool } = require('pg');
 
 const pool = new Pool({
@@ -64,7 +64,7 @@ const pool = new Pool({
 });
 
 app.use(session({
-  store: new pgSession({
+  store: new PgSession({
     pool,
     tableName: 'Session',
   }),
@@ -75,7 +75,7 @@ app.use(session({
     maxAge: 30 * 24 * 60 * 60 * 1000,
     httpOnly: true,
     sameSite: 'none',
-    secure: false,
+    secure: true,
   },
 }));
 
