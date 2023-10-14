@@ -20,13 +20,24 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const redis = require('redis')
+const redis = require('redis');
 const RedisStore = require('connect-redis').default;
 
-const redisClient = redis.createClient({
-  legacyMode: true,
-  url: process.env.REDIS_URL || 'redis://localhost:6379',
-});
+(async () => {
+  const redisClient = redis.createClient({
+    legacyMode: true,
+    url: process.env.REDIS_URL || 'redis://localhost:6379',
+  });
+
+  redisClient.on('error', (err) => console.log('Redis Client Error', err));
+
+  await redisClient.connect();
+
+  await redisClient.set('key', 'value');
+  console.log('Redis Connected!');
+  const value = await redisClient.get('key');
+  console.log(value);
+})();
 
 const MAX_AGE = +process.env.MAX_AGE || 999999;
 
