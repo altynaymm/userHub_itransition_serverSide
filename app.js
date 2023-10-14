@@ -49,12 +49,6 @@ app.use(
   }),
 );
 
-app.use(express.static(path.join(__dirname, '../client/dist')));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'));
-});
-
 const userRouter = require('./src/routes/user.router');
 
 app.use('/api', userRouter);
