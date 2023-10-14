@@ -37,25 +37,24 @@ const RedisStore = require('connect-redis').default;
   console.log('Redis Connected!');
   const value = await redisClient.get('key');
   console.log(value);
+
+  const MAX_AGE = +process.env.MAX_AGE || 999999;
+
+  const sessionConfig = {
+    name: 'ReactAuthentication',
+    store: new RedisStore({ client: redisClient, ttl: MAX_AGE }),
+    secret: process.env.SESSION_SECRET ?? 'Секретное слово',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: MAX_AGE * 1000,
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    },
+  };
+  app.use(session(sessionConfig));
 })();
-
-const MAX_AGE = +process.env.MAX_AGE || 999999;
-
-const sessionConfig = {
-  name: 'ReactAuthentication',
-  store: new RedisStore({ client: redisClient, ttl: MAX_AGE }),
-  secret: process.env.SESSION_SECRET ?? 'Секретное слово',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: MAX_AGE * 1000,
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true,
-  },
-};
-
-app.use(session(sessionConfig));
 
 const userRouter = require('./src/routes/user.router');
 
