@@ -57,16 +57,16 @@ const pool = new Pool({
 app.use(session({
   store: new PgSession({
     pool,
-    tableName: 'Session',
+    tableName: 'session',
   }),
   secret: process.env.SECRET_KEY_SESSION ?? 'Секретное слово',
   resave: false,
   saveUninitialized: false,
   cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000,
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true,
+    // httpOnly: true,
+    // sameSite: 'none',
+    // secure: true,
   },
 }));
 
