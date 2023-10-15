@@ -71,14 +71,15 @@ app.use(session({
 }));
 
 app.use(
-  cors(),
+  cors(
+    {
+      origin: 'https://user-hub-itransition-client-side.vercel.app',
+      credentials: true,
+      methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
+      optionsSuccessStatus: 204,
+    },
+  ),
 );
-//   {
-//   origin: ['https://user-hub-itransition-client-side.vercel.app', 'https://user-hub-itransition-client-side.vercel.app/users'],
-//   credentials: true,
-//   methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
-//   optionsSuccessStatus: 204,
-// }
 
 // const { createProxyMiddleware } = require('http-proxy-middleware');
 
