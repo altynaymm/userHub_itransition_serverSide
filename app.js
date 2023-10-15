@@ -70,6 +70,16 @@ app.use(session({
   },
 }));
 
+app.use(
+  cors({
+    origin: ['https://user-hub-itransition-client-side.vercel.app', 'https://user-hub-itransition-client-side.vercel.app/users'],
+    credentials: true,
+    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
+    optionsSuccessStatus: 204,
+  }),
+);
+
+
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const API_SERVICE_URL = 'https://userhub-itransition-db40c4fa7fa7.herokuapp.com/';
@@ -82,19 +92,10 @@ app.use('/api', createProxyMiddleware({
   },
 }));
 
-app.use(
-  cors({
-    origin: ['https://user-hub-itransition-client-side.vercel.app', 'https://user-hub-itransition-client-side.vercel.app/users'],
-    credentials: true,
-    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
-    optionsSuccessStatus: 204,
-  }),
-);
-
 
 const userRouter = require('./src/routes/user.router');
 
-app.use('/api', userRouter);
+app.use('/', userRouter);
 
 
 
