@@ -17,17 +17,12 @@ const app = express();
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+const redis = require('redis');
 
-const Redis = require('ioredis');
-const connectRedis = require('connect-redis');
+const RedisStore = require('connect-redis').default;
 
-const RedisStore = connectRedis(session);
-
-const redisClient = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
-
-redisClient.on('error', (err) => {
-  console.error('Ошибка в Redis', err);
-});
+const redisClient = redis.createClient(process.env.REDIS_URL || 'redis://localhost:6379');
+redisClient.connect().catch(console.error);
 
 const MAX_AGE = +process.env.MAX_AGE || 999999;
 
@@ -39,7 +34,6 @@ const sessionConfig = {
   saveUninitialized: false,
   cookie: {
     maxAge: MAX_AGE * 1000,
-    httpOnly: true,
     sameSite: 'none',
     secure: true,
   },
