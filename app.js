@@ -18,57 +18,59 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// const Redis = require('ioredis');
-// const RedisStore = require('connect-redis').default;
+const Redis = require('ioredis');
+const connectRedis = require('connect-redis');
 
-// const redisClient = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+const RedisStore = connectRedis(session);
 
-// redisClient.on("error", (err) => {
-//   console.error("Ошибка в Redis", err);
+const redisClient = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+
+redisClient.on('error', (err) => {
+  console.error('Ошибка в Redis', err);
+});
+
+const MAX_AGE = +process.env.MAX_AGE || 999999;
+
+const sessionConfig = {
+  name: 'ReactAuthentication',
+  store: new RedisStore({ client: redisClient, ttl: MAX_AGE, disableTouch: true }),
+  secret: process.env.SESSION_SECRET ?? 'Секретное слово',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: MAX_AGE * 1000,
+    httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+  },
+};
+app.use(session(sessionConfig));
+
+// const PgSession = require('connect-pg-simple')(session);
+// const { Pool } = require('pg');
+
+// const pool = new Pool({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false,
+//   },
 // });
 
-// const MAX_AGE = +process.env.MAX_AGE || 999999;
-
-// const sessionConfig = {
-//   name: 'ReactAuthentication',
-//   store: new RedisStore({ client: redisClient, ttl: MAX_AGE }),
-//   secret: process.env.SESSION_SECRET ?? 'Секретное слово',
+// app.use(session({
+//   store: new PgSession({
+//     pool,
+//     tableName: 'session',
+//   }),
+//   secret: process.env.SECRET_KEY_SESSION ?? 'Секретное слово',
 //   resave: false,
 //   saveUninitialized: false,
 //   cookie: {
-//     maxAge: MAX_AGE * 1000,
+//     maxAge: 30 * 24 * 60 * 60 * 1000,
 //     httpOnly: true,
 //     sameSite: 'none',
 //     secure: true,
 //   },
-// };
-// app.use(session(sessionConfig));
-
-const PgSession = require('connect-pg-simple')(session);
-const { Pool } = require('pg');
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
-
-app.use(session({
-  store: new PgSession({
-    pool,
-    tableName: 'session',
-  }),
-  secret: process.env.SECRET_KEY_SESSION ?? 'Секретное слово',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    // httpOnly: true,
-    // sameSite: 'none',
-    // secure: true,
-  },
-}));
+// }));
 
 app.use(
   cors(
