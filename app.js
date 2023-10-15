@@ -14,14 +14,15 @@ const app = express();
 //   credentials: true,
 // }));
 
-app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 const redis = require('redis');
+
+app.set('trust proxy', 1);
 
 const RedisStore = require('connect-redis').default;
 
-const redisClient = redis.createClient(process.env.REDIS_URL || 'redis://localhost:6379');
+const redisClient = redis.createClient(process.env.REDIS_URL || 'redis://localhost:6379', {
+  legacyMode: true,
+});
 redisClient.connect().catch(console.error);
 
 const MAX_AGE = +process.env.MAX_AGE || 999999;
@@ -35,10 +36,15 @@ const sessionConfig = {
   cookie: {
     maxAge: MAX_AGE * 1000,
     sameSite: 'none',
+    httpOnly: false,
     secure: true,
   },
 };
 app.use(session(sessionConfig));
+
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // const PgSession = require('connect-pg-simple')(session);
 // const { Pool } = require('pg');
