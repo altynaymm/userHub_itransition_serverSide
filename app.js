@@ -73,7 +73,7 @@ app.use(session({
 app.use(
   cors(
     {
-      origin: 'https://user-hub-itransition-client-side.vercel.app',
+      origin: 'https://user-hub-itransition.vercel.app',
       credentials: true,
       methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
       optionsSuccessStatus: 204,
