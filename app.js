@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
- const session = require('express-session');
+const session = require('express-session');
 
 const app = express();
 
@@ -11,9 +11,11 @@ const redis = require('redis');
 
 const RedisStore = require('connect-redis').default;
 
-const redisClient = redis.createClient('rediss://:p536fc1785e20d20d557cffe22a21413d9b099018b88a3805d96f5a793d466567@ec2-52-49-83-27.eu-west-1.compute.amazonaws.com:24130', {
+const redisClient = redis.createClient({
   legacyMode: true,
-  tls: {
+  url: process.env.REDIS_URL,
+  socket: {
+    tls: true,
     rejectUnauthorized: false,
   },
 });
@@ -81,7 +83,6 @@ const userRouter = require('./src/routes/user.router');
 
 app.use('/', userRouter);
 
-
 // const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // const API_SERVICE_URL = 'https://userhub-itransition-db40c4fa7fa7.herokuapp.com/';
@@ -93,8 +94,6 @@ app.use('/', userRouter);
 //     '^/api': '',
 //   },
 // }));
-
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
