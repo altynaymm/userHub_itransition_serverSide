@@ -7,15 +7,7 @@ const session = require('express-session');
 
 const app = express();
 
-// app.use(cors({
-//   origin: '*',
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   allowedHeaders: ['Content-Type', 'Authorization'],
-//   credentials: true,
-// }));
-
 const redis = require('redis');
-
 
 const RedisStore = require('connect-redis').default;
 
@@ -76,7 +68,7 @@ app.use(
     {
       origin: 'https://user-hub-itransition.vercel.app',
       credentials: true,
-      methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
+      methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
       optionsSuccessStatus: 204,
     },
   ),
