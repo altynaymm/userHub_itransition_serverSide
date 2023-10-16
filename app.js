@@ -16,7 +16,6 @@ const app = express();
 
 const redis = require('redis');
 
-app.set('trust proxy', 1);
 
 const RedisStore = require('connect-redis').default;
 
