@@ -60,6 +60,9 @@ const app = express();
 //     secure: true,
 //   },
 // }));
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use(
   cors(
@@ -72,9 +75,6 @@ app.use(
   ),
 );
 
-app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 // const { createProxyMiddleware } = require('http-proxy-middleware');
 
