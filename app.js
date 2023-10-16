@@ -24,7 +24,7 @@ const MAX_AGE = +process.env.MAX_AGE || 999999;
 
 const sessionConfig = {
   name: 'ReactAuthentication',
-  store: new RedisStore({ client: redisClient, ttl: MAX_AGE, disableTouch: true }),
+  store: new RedisStore({ client: redisClient, ttl: MAX_AGE }),
   secret: process.env.SESSION_SECRET ?? 'Секретное слово',
   resave: false,
   saveUninitialized: false,
@@ -32,7 +32,7 @@ const sessionConfig = {
     maxAge: MAX_AGE * 1000,
     sameSite: 'none',
     httpOnly: false,
-    secure: true,
+    secure: false,
   },
 };
 app.use(session(sessionConfig));
