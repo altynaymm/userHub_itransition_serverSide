@@ -33,8 +33,8 @@ const sessionConfig = {
   cookie: {
     maxAge: MAX_AGE * 1000,
     sameSite: 'none',
-    httpOnly: false,
-    secure: false,
+    httpOnly: true,
+    secure: true,
   },
 };
 app.use(session(sessionConfig));
