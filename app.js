@@ -3,35 +3,35 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-// const session = require('express-session');
+ const session = require('express-session');
 
 const app = express();
 
-// const redis = require('redis');
+const redis = require('redis');
 
-// const RedisStore = require('connect-redis').default;
+const RedisStore = require('connect-redis').default;
 
-// const redisClient = redis.createClient(process.env.REDIS_TLS_URL || 'redis://localhost:6379', {
-//   legacyMode: true,
-// });
-// redisClient.connect().catch(console.error);
+const redisClient = redis.createClient(process.env.REDIS_TLS_URL || 'redis://localhost:6379', {
+  legacyMode: true,
+});
+redisClient.connect().catch(console.error);
 
-// const MAX_AGE = +process.env.MAX_AGE || 999999;
+const MAX_AGE = +process.env.MAX_AGE || 999999;
 
-// const sessionConfig = {
-//   name: 'ReactAuthentication',
-//   store: new RedisStore({ client: redisClient, ttl: MAX_AGE, disableTouch: true }),
-//   secret: process.env.SESSION_SECRET ?? 'Секретное слово',
-//   resave: false,
-//   saveUninitialized: false,
-//   cookie: {
-//     maxAge: MAX_AGE * 1000,
-//     sameSite: 'none',
-//     httpOnly: false,
-//     secure: true,
-//   },
-// };
-// app.use(session(sessionConfig));
+const sessionConfig = {
+  name: 'ReactAuthentication',
+  store: new RedisStore({ client: redisClient, ttl: MAX_AGE, disableTouch: true }),
+  secret: process.env.SESSION_SECRET ?? 'Секретное слово',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: MAX_AGE * 1000,
+    sameSite: 'none',
+    httpOnly: false,
+    secure: true,
+  },
+};
+app.use(session(sessionConfig));
 
 // const PgSession = require('connect-pg-simple')(session);
 // const { Pool } = require('pg');
