@@ -33,8 +33,6 @@ const app = express();
 // };
 // app.use(session(sessionConfig));
 
-
-
 // const PgSession = require('connect-pg-simple')(session);
 // const { Pool } = require('pg');
 
@@ -60,9 +58,6 @@ const app = express();
 //     secure: true,
 //   },
 // }));
-app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 app.use(
   cors(
@@ -75,6 +70,13 @@ app.use(
   ),
 );
 
+const userRouter = require('./src/routes/user.router');
+
+app.use('/', userRouter);
+
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // const { createProxyMiddleware } = require('http-proxy-middleware');
 
@@ -88,9 +90,7 @@ app.use(
 //   },
 // }));
 
-const userRouter = require('./src/routes/user.router');
 
-app.use('/', userRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
