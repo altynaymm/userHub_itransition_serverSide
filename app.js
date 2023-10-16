@@ -12,7 +12,7 @@ const { createClient } = require('redis');
 const RedisStore = require('connect-redis').default;
 
 const redisClient = createClient({
-  legacyMode: true,
+  legacyMode: false,
   url: process.env.REDIS_URL,
   tls: {
     rejectUnauthorized: false,
