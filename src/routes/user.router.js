@@ -13,7 +13,7 @@ userRouter.get('/check-session', async (req, res) => {
     const existingUser = await User.findOne({ where: { email: userCheck } });
     res.json(existingUser);
   } else {
-    res.json({ status: 404 });
+    res.status(404).json({ error: 'no active session' });
   }
 });
 
@@ -69,7 +69,7 @@ userRouter.post('/sign-in', async (req, res) => {
       res.json({ error: 'User does not exist' });
     }
   } catch (error) {
-    res.send('Oops, something went wrong', error);
+    res.status(500).json({ message: 'Oops, something went wrong' });
   }
 });
 
@@ -78,7 +78,7 @@ userRouter.get('/users', async (req, res) => {
     const usersList = await User.findAll();
     res.json(usersList);
   } catch (error) {
-    res.json({ error: 'Cannot get users list' });
+    res.status(500).json({ error: 'Cannot get users list' });
   }
 });
 
