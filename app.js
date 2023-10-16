@@ -11,7 +11,7 @@ const redis = require('redis');
 
 const RedisStore = require('connect-redis').default;
 
-const redisClient = redis.createClient(process.env.REDIS_URL, {
+const redisClient = redis.createClient(process.env.REDIS_TLS_URL, {
   legacyMode: true,
   tls: {
     rejectUnauthorized: false,
