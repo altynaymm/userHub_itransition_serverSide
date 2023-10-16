@@ -7,11 +7,11 @@ const session = require('express-session');
 
 const app = express();
 
-const redis = require('redis');
+const { createClient } = require('redis');
 
 const RedisStore = require('connect-redis').default;
 
-const redisClient = redis.createClient({
+const redisClient = createClient({
   legacyMode: true,
   url: process.env.REDIS_URL,
   tls: {
