@@ -33,9 +33,7 @@ const app = express();
 // };
 // app.use(session(sessionConfig));
 
-app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+
 
 // const PgSession = require('connect-pg-simple')(session);
 // const { Pool } = require('pg');
@@ -73,6 +71,10 @@ app.use(
     },
   ),
 );
+
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // const { createProxyMiddleware } = require('http-proxy-middleware');
 
