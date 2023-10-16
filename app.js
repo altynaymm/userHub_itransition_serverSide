@@ -20,6 +20,8 @@ const redisClient = createClient({
 });
 redisClient.connect().catch(console.error);
 
+console.log(process.env.REDIS_URL);
+
 const MAX_AGE = +process.env.MAX_AGE || 999999;
 
 const sessionConfig = {
@@ -42,7 +44,7 @@ app.use(
     {
       origin: 'https://user-hub-itransition.vercel.app',
       credentials: true,
-      methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+      methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
       optionsSuccessStatus: 204,
     },
   ),
