@@ -12,7 +12,7 @@ const redis = require('redis');
 const RedisStore = require('connect-redis').default;
 
 const redisClient = redis.createClient({
-  legacyMode: true,
+  // legacyMode: true,
   url: process.env.REDIS_URL,
   tls: {
     rejectUnauthorized: false,
@@ -37,32 +37,6 @@ const sessionConfig = {
 };
 app.use(session(sessionConfig));
 
-// const PgSession = require('connect-pg-simple')(session);
-// const { Pool } = require('pg');
-
-// const pool = new Pool({
-//   connectionString: process.env.DATABASE_URL,
-//   ssl: {
-//     rejectUnauthorized: false,
-//   },
-// });
-
-// app.use(session({
-//   store: new PgSession({
-//     pool,
-//     tableName: 'session',
-//   }),
-//   secret: process.env.SECRET_KEY_SESSION ?? 'Секретное слово',
-//   resave: false,
-//   saveUninitialized: false,
-//   cookie: {
-//     maxAge: 30 * 24 * 60 * 60 * 1000,
-//     httpOnly: true,
-//     sameSite: 'none',
-//     secure: true,
-//   },
-// }));
-
 app.use(
   cors(
     {
@@ -81,18 +55,6 @@ app.use(express.json());
 const userRouter = require('./src/routes/user.router');
 
 app.use('/', userRouter);
-
-// const { createProxyMiddleware } = require('http-proxy-middleware');
-
-// const API_SERVICE_URL = 'https://userhub-itransition-db40c4fa7fa7.herokuapp.com/';
-
-// app.use('/api', createProxyMiddleware({
-//   target: API_SERVICE_URL,
-//   changeOrigin: true,
-//   pathRewrite: {
-//     '^/api': '',
-//   },
-// }));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
