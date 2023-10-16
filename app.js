@@ -70,13 +70,14 @@ app.use(
   ),
 );
 
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 const userRouter = require('./src/routes/user.router');
 
 app.use('/', userRouter);
 
-app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 // const { createProxyMiddleware } = require('http-proxy-middleware');
 
