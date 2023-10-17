@@ -60,7 +60,7 @@ userRouter.post('/sign-up', async (req, res) => {
 });
 
 userRouter.post('/sign-in', async (req, res) => {
-  const { email, password } = req.body.userData;
+  const { email, password } = req.body;
   console.log(req.body);
   try {
     const user = await User.findOne({ where: { email } });
