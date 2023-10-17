@@ -20,7 +20,6 @@ app.use(
   ),
 );
 
-
 const userRouter = require('./src/routes/user.router');
 
 app.use('/', userRouter);
