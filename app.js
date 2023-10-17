@@ -3,42 +3,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const session = require('express-session');
 
 const app = express();
 app.set('trust proxy', 1);
-
-const { createClient } = require('redis');
-
-const RedisStore = require('connect-redis').default;
-
-const redisClient = createClient({
-  legacyMode: true,
-  url: process.env.REDIS_URL,
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
-redisClient.connect().catch(console.error);
-
-console.log(process.env.REDIS_URL);
-
-const MAX_AGE = +process.env.MAX_AGE || 999999;
-
-const sessionConfig = {
-  name: 'ReactAuthentication',
-  store: new RedisStore({ client: redisClient, ttl: MAX_AGE }),
-  secret: process.env.SESSION_SECRET ?? 'Секретное слово',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: MAX_AGE * 1000,
-    sameSite: 'none',
-    httpOnly: false,
-    secure: true,
-  },
-};
-app.use(session(sessionConfig));
 
 app.use(
   cors(

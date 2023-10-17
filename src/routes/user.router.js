@@ -3,18 +3,31 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const { Op } = require('sequelize');
+const jwt = require('jsonwebtoken');
 
 const userRouter = express.Router();
 const { User } = require('../../db/models');
 
-userRouter.get('/check-session', async (req, res) => {
-  if (req.session.user) {
-    const userCheck = req.session.user;
-    const existingUser = await User.findOne({ where: { email: userCheck } });
-    res.json(existingUser);
-  } else {
-    res.status(404).json({ error: 'no active session' });
+userRouter.get('/check-user', (req, res) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided.' });
   }
+
+  jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to authenticate token.' });
+    }
+
+    const user = await User.findOne({ where: { id: decoded.userId } });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    res.json(user);
+  });
 });
 
 userRouter.post('/sign-up', async (req, res) => {
@@ -31,8 +44,10 @@ userRouter.post('/sign-up', async (req, res) => {
       lastLoginDate: new Date(),
     });
     const user = await User.findOne({ where: { email } });
-    req.session.user = user.email;
-    res.json(user);
+    const token = jwt.sign({ userId: user.id, email: user.email }, '', {
+      expiresIn: '1h',
+    });
+    res.json({ token, user });
   } catch (error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
       res.status(400).send({ error: 'This email is already registered.' });
@@ -59,9 +74,10 @@ userRouter.post('/sign-in', async (req, res) => {
         req.session.user = user.email;
         user.lastLoginDate = new Date();
         await user.save();
-        req.session.save(() => {
-          res.json(user);
+        const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, {
+          expiresIn: '1h',
         });
+        res.json({ token, user });
       } else {
         res.json({ error: 'Wrong password' });
       }
@@ -82,17 +98,9 @@ userRouter.get('/users', async (req, res) => {
   }
 });
 
-userRouter.get('/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.clearCookie('ReactAuthentication');
-    res.json({});
-  });
-});
-
 userRouter.delete('/delete-user', async (req, res) => {
   const userIds = req.body.usersId;
   try {
-    // Delete users using Sequelize
     await User.destroy({
       where: {
         id: userIds,
