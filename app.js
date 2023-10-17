@@ -5,6 +5,9 @@ const cors = require('cors');
 const morgan = require('morgan');
 
 const app = express();
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use(
   cors(
@@ -17,9 +20,6 @@ app.use(
   ),
 );
 
-app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 const userRouter = require('./src/routes/user.router');
 
