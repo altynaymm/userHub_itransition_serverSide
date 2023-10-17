@@ -10,12 +10,15 @@ const { User } = require('../../db/models');
 
 userRouter.get('/check-user', (req, res) => {
   const token = req.headers.authorization;
+  const parts = token.split('Bearer ');
+  const jwtToken = parts[1];
+  console.log(jwtToken);
 
   if (!token) {
     return res.status(401).json({ error: 'No token provided.' });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+  jwt.verify(jwtToken, 'YOUR_SECRET_KEY', async (err, decoded) => {
     if (err) {
       return res.status(500).json({ error: 'Failed to authenticate token.' });
     }
@@ -44,9 +47,11 @@ userRouter.post('/sign-up', async (req, res) => {
       lastLoginDate: new Date(),
     });
     const user = await User.findOne({ where: { email } });
-    const token = jwt.sign({ userId: user.id, email: user.email }, '', {
+
+    const token = jwt.sign({ userId: user.id, email: user.email }, 'YOUR_SECRET_KEY', {
       expiresIn: '1h',
     });
+
     res.json({ token, user });
   } catch (error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
@@ -61,7 +66,7 @@ userRouter.post('/sign-up', async (req, res) => {
 
 userRouter.post('/sign-in', async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
+ 
   try {
     const user = await User.findOne({ where: { email } });
 
@@ -71,11 +76,11 @@ userRouter.post('/sign-in', async (req, res) => {
       }
 
       const checkPass = await bcrypt.compare(password, user.password);
+
       if (checkPass) {
-        req.session.user = user.email;
         user.lastLoginDate = new Date();
         await user.save();
-        const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ userId: user.id, email: user.email }, 'YOUR_SECRET_KEY', {
           expiresIn: '1h',
         });
         res.json({ token, user });

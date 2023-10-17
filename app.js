@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(
   cors(
     {
-      origin: 'https://user-hub-itransition.vercel.app',
+      origin:'http://localhost:5173',
       credentials: true,
       methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
       optionsSuccessStatus: 204,
