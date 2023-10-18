@@ -18,7 +18,7 @@ userRouter.get('/check-user', (req, res) => {
     return res.status(401).json({ error: 'No token provided.' });
   }
 
-  jwt.verify(jwtToken, 'YOUR_SECRET_KEY', async (err, decoded) => {
+  jwt.verify(jwtToken, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
       return res.status(500).json({ error: 'Failed to authenticate token.' });
     }
@@ -48,7 +48,7 @@ userRouter.post('/sign-up', async (req, res) => {
     });
     const user = await User.findOne({ where: { email } });
 
-    const token = jwt.sign({ userId: user.id, email: user.email }, 'YOUR_SECRET_KEY', {
+    const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
 
@@ -80,7 +80,7 @@ userRouter.post('/sign-in', async (req, res) => {
       if (checkPass) {
         user.lastLoginDate = new Date();
         await user.save();
-        const token = jwt.sign({ userId: user.id, email: user.email }, 'YOUR_SECRET_KEY', {
+        const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, {
           expiresIn: '1h',
         });
         res.json({ token, user });
